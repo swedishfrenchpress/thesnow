@@ -5,6 +5,8 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    // Exclude node_modules except for specific packages if needed
+    "!./node_modules",
   ],
   darkMode: "class",
   theme: {
@@ -20,6 +22,10 @@ const config: Config = {
     },
   },
   plugins: [],
+  // Don't process CSS files from node_modules
+  corePlugins: {
+    preflight: true,
+  },
 };
 export default config;
 

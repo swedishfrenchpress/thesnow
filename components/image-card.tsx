@@ -4,10 +4,10 @@
  * ImageCard component - Displays an individual artwork card
  * Features:
  * - Blurred image preview (until purchased)
- * - Price in BTC
+ * - Price in BTC/sats
  * - Artwork metadata (title, dimensions, date)
  * - Hover animations
- * - Purchase/Unlock button
+ * - MDK Lightning checkout for purchases
  * 
  * The blur effect protects the full-resolution image until payment is made
  */
@@ -16,6 +16,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { Artwork } from "@/lib/images"
 import { useState } from "react"
+import { useCheckout } from "mdk-checkout"
 
 interface ImageCardProps {
   artwork: Artwork
@@ -24,6 +25,24 @@ interface ImageCardProps {
 
 export function ImageCard({ artwork, index }: ImageCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  
+  // MDK checkout hook for Lightning payments
+  const { navigate, isNavigating } = useCheckout()
+  
+  // Handle purchase button click
+  const handlePurchase = () => {
+    navigate({
+      prompt: `Purchase "${artwork.title}" - ${artwork.description}`,
+      amount: artwork.price,        // Amount in sats
+      currency: 'SAT',              // Bitcoin satoshis
+      metadata: {
+        type: 'artwork_purchase',
+        artworkId: artwork.id,
+        artworkTitle: artwork.title,
+        successUrl: '/checkout/success'
+      }
+    })
+  }
 
   return (
     <motion.div
@@ -109,13 +128,15 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
               </div>
             </div>
 
-            {/* Purchase Button */}
+            {/* Purchase Button - MDK Lightning Checkout */}
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors"
+              onClick={handlePurchase}
+              disabled={isNavigating}
+              whileHover={{ scale: isNavigating ? 1 : 1.02 }}
+              whileTap={{ scale: isNavigating ? 1 : 0.98 }}
+              className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Purchase
+              {isNavigating ? 'Creating checkout...' : 'Purchase'}
             </motion.button>
           </div>
         </div>
