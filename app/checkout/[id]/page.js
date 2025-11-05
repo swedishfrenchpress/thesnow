@@ -7,10 +7,11 @@
  */
 
 import { Checkout } from "mdk-checkout";
+import { use } from "react";
 
-export default function CheckoutPage({ params }: { params: { id: string } }) {
+export default function CheckoutPage({ params }) {
   // Extract the checkout ID from the URL params
-  const { id } = params;
+  const { id } = use(params);
 
   return (
     <div className="min-h-screen pt-16">
