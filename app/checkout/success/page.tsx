@@ -10,13 +10,14 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { artworks } from "@/lib/images"
+import { useEffect, useState, Suspense } from "react"
+import { artworks, Artwork } from "@/lib/images"
 
-export default function SuccessPage() {
+// Component that uses useSearchParams - must be wrapped in Suspense
+function SuccessContent() {
   const searchParams = useSearchParams()
   const artworkId = searchParams.get("artworkId")
-  const [artwork, setArtwork] = useState(null)
+  const [artwork, setArtwork] = useState<Artwork | null>(null)
 
   // Find the artwork and store purchase in localStorage
   useEffect(() => {
@@ -190,6 +191,22 @@ export default function SuccessPage() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center px-4 pt-16">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 border-4 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+          <p className="text-foreground/70">Loading...</p>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   )
 }
 
