@@ -15,7 +15,7 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { Artwork } from "@/lib/images"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useCheckout } from "mdk-checkout"
 
 interface ImageCardProps {
@@ -25,9 +25,43 @@ interface ImageCardProps {
 
 export function ImageCard({ artwork, index }: ImageCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [isPurchased, setIsPurchased] = useState(false)
   
   // MDK checkout hook for Lightning payments
   const { navigate, isNavigating } = useCheckout()
+
+  // Check if this artwork has been purchased (stored in localStorage)
+  useEffect(() => {
+    // Function to check and update purchase status
+    const checkPurchaseStatus = () => {
+      const purchasedItems = JSON.parse(localStorage.getItem("purchasedArtworks") || "[]")
+      setIsPurchased(purchasedItems.includes(artwork.id))
+    }
+    
+    // Check on mount
+    checkPurchaseStatus()
+    
+    // Listen for custom purchase event (same tab)
+    const handlePurchaseEvent = (event: Event) => {
+      const customEvent = event as CustomEvent<{ artworkId: string }>
+      if (customEvent.detail?.artworkId === artwork.id) {
+        checkPurchaseStatus()
+      }
+    }
+    
+    // Listen for storage changes (other tabs)
+    const handleStorageChange = () => {
+      checkPurchaseStatus()
+    }
+    
+    window.addEventListener("artworkPurchased", handlePurchaseEvent)
+    window.addEventListener("storage", handleStorageChange)
+    
+    return () => {
+      window.removeEventListener("artworkPurchased", handlePurchaseEvent)
+      window.removeEventListener("storage", handleStorageChange)
+    }
+  }, [artwork.id])
   
   // Handle purchase button click
   const handlePurchase = () => {
@@ -39,7 +73,7 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
         type: 'artwork_purchase',
         artworkId: artwork.id,
         artworkTitle: artwork.title,
-        successUrl: '/checkout/success'
+        successUrl: `/checkout/success?artworkId=${artwork.id}`
       }
     })
   }
@@ -68,7 +102,7 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
           />
           
           {/* Blur Overlay - This protects the image until purchased */}
-          {!artwork.isPurchased && (
+          {!isPurchased && (
             <div className="absolute inset-0 backdrop-blur-2xl bg-background/50 flex items-center justify-center z-10">
               {/* Additional blur layer for stronger protection */}
               <div className="absolute inset-0 backdrop-blur-2xl bg-background/40"></div>
@@ -93,6 +127,27 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
                 </svg>
                 <p className="text-sm font-medium opacity-70">Locked</p>
               </motion.div>
+            </div>
+          )}
+          
+          {/* Unlocked Badge - Show when artwork is purchased */}
+          {isPurchased && (
+            <div className="absolute top-4 right-4 z-10 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-3 h-3"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Unlocked
             </div>
           )}
         </div>
@@ -128,16 +183,22 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
               </div>
             </div>
 
-            {/* Purchase Button - MDK Lightning Checkout */}
-            <motion.button
-              onClick={handlePurchase}
-              disabled={isNavigating}
-              whileHover={{ scale: isNavigating ? 1 : 1.02 }}
-              whileTap={{ scale: isNavigating ? 1 : 0.98 }}
-              className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isNavigating ? 'Creating checkout...' : 'Purchase'}
-            </motion.button>
+            {/* Purchase Button - Only show if not purchased */}
+            {!isPurchased ? (
+              <motion.button
+                onClick={handlePurchase}
+                disabled={isNavigating}
+                whileHover={{ scale: isNavigating ? 1 : 1.02 }}
+                whileTap={{ scale: isNavigating ? 1 : 0.98 }}
+                className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isNavigating ? 'Creating checkout...' : 'Purchase'}
+              </motion.button>
+            ) : (
+              <div className="w-full py-3 bg-green-500/10 border border-green-500/20 text-green-500 font-semibold text-center rounded">
+                ✓ Purchased
+              </div>
+            )}
           </div>
         </div>
       </div>
