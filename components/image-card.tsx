@@ -16,7 +16,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { Artwork } from "@/lib/images"
 import { useState, useEffect } from "react"
-import { useCheckout } from "mdk-checkout"
+import { useCheckout } from "@moneydevkit/nextjs"
 
 interface ImageCardProps {
   artwork: Artwork
@@ -66,7 +66,8 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
   // Handle purchase button click
   const handlePurchase = () => {
     navigate({
-      prompt: `Purchase "${artwork.title}" - ${artwork.description}`,
+      title: `Purchase "${artwork.title}"`,
+      description: artwork.description,
       amount: artwork.price,        // Amount in sats
       currency: 'SAT',              // Bitcoin satoshis
       metadata: {

@@ -6,7 +6,7 @@
  * The [id] in the path is the checkout session ID created by MDK
  */
 
-import { Checkout } from "mdk-checkout";
+import { Checkout } from "@moneydevkit/nextjs";
 
 export default function CheckoutPage({ params }) {
   // Extract the checkout ID from the URL params

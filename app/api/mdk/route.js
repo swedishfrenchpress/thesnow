@@ -4,5 +4,5 @@
  * It processes payment confirmations and communicates with your Lightning node
  */
 
-export { POST } from 'mdk-checkout/server/route'
+export { POST } from '@moneydevkit/nextjs/server/route'
 

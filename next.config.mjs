@@ -1,3 +1,3 @@
-import withMdkCheckout from 'mdk-checkout/next-plugin'
+import withMdkCheckout from '@moneydevkit/nextjs/next-plugin'
 
 export default withMdkCheckout({})
