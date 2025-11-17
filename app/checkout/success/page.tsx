@@ -175,11 +175,20 @@ function SuccessContent() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="mt-8 space-y-4"
         >
+          <Link href={`/artwork/${artwork.id}`}>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors mb-3"
+            >
+              Go to download page
+            </motion.button>
+          </Link>
           <Link href="/">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors"
+              className="w-full py-3 border border-foreground/20 font-semibold hover:border-foreground/40 transition-colors"
             >
               Back to Gallery
             </motion.button>

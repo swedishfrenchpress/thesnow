@@ -32,9 +32,7 @@ export function Navigation() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-background/80 backdrop-blur-md border-b border-foreground/10"
-          : "bg-transparent"
+        isScrolled ? "bg-background/80 backdrop-blur-md" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,15 +43,9 @@ export function Navigation() {
               whileHover={{ scale: 1.05 }}
               className="text-xl font-bold tracking-tight"
             >
-              ERIK<span className="text-orange-500">₿</span>
+              THE SNOW
             </motion.div>
           </Link>
-
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center gap-8">
-            <NavLink href="#home">Home</NavLink>
-            <NavLink href="#gallery">Gallery</NavLink>
-          </div>
 
           {/* Theme Toggle */}
           <div className="flex items-center gap-4">

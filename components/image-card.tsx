@@ -14,6 +14,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
+import Link from "next/link"
 import { Artwork } from "@/lib/images"
 import { useState, useEffect } from "react"
 import { useCheckout } from "@moneydevkit/nextjs"
@@ -196,8 +197,16 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
                 {isNavigating ? 'Creating checkout...' : 'Purchase'}
               </motion.button>
             ) : (
-              <div className="w-full py-3 bg-green-500/10 border border-green-500/20 text-green-500 font-semibold text-center rounded">
-                ✓ Purchased
+              <div className="space-y-3">
+                <div className="w-full py-3 bg-green-500/10 border border-green-500/20 text-green-500 font-semibold text-center rounded">
+                  ✓ Purchased
+                </div>
+                <Link
+                  href={`/artwork/${artwork.id}`}
+                  className="block w-full py-3 border border-foreground/20 text-center font-semibold hover:border-foreground/40 transition-colors rounded"
+                >
+                  View
+                </Link>
               </div>
             )}
           </div>

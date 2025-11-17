@@ -15,7 +15,7 @@ import { artworks } from "@/lib/images"
 
 export function Gallery() {
   return (
-    <section id="gallery" className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="gallery" className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -23,14 +23,13 @@ export function Gallery() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
-            Exclusive Collection
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4">
+          Alternative realities that should exist.
           </h2>
-          <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
-            Each piece is a unique AI-generated masterpiece. Own it with Bitcoin and
-            unlock the full high-resolution artwork.
+          <p className="text-lg text-foreground/70 max-w-3xl mx-auto">
+          Made these in Midjourney, they&apos;re a window into my head. The kind of sci-fi world I think would be cool to see. You can buy them if you want. Payments powered by <a href="http://moneydevkit.com/" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline">Money Dev Kit</a>.
           </p>
         </motion.div>
 
