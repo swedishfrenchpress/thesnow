@@ -9,6 +9,18 @@ export const metadata: Metadata = {
   title: "Memoria",
   description: "Exclusive collection of AI-generated artwork. Purchase unique digital art with Bitcoin.",
   keywords: ["Bitcoin", "AI Art", "Midjourney", "Digital Art", "NFT", "Cryptocurrency"],
+  openGraph: {
+    title: "Memoria",
+    description: "Exclusive collection of AI-generated artwork. Purchase unique digital art with Bitcoin.",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Memoria - AI-Generated Artwork Collection",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
