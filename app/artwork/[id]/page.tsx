@@ -6,13 +6,10 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { artworks, Artwork } from "@/lib/images"
 import { motion } from "framer-motion"
-import { useCheckout } from "@moneydevkit/nextjs"
 
 function ArtworkContent({ artwork }: { artwork: Artwork }) {
   const [isPurchased, setIsPurchased] = useState(false)
   const router = useRouter()
-  // Initialize the checkout hook - this provides navigate function and loading state
-  const { navigate, isNavigating } = useCheckout()
 
   useEffect(() => {
     const purchased = JSON.parse(localStorage.getItem("purchasedArtworks") || "[]")
@@ -34,20 +31,10 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
     }
   }, [artwork.id])
 
-  // Handle purchase button click
-  // This creates a checkout session and navigates to the checkout page
+  // TODO: Re-implement checkout when payment system is installed
   const handlePurchase = () => {
-    navigate({
-      title: `Purchase ${artwork.title}`,
-      description: artwork.description,
-      amount: 20, // 20 satoshis as requested
-      currency: 'SAT', // Using satoshis (SAT) instead of USD
-      metadata: {
-        type: 'artwork_purchase',
-        artworkId: artwork.id, // Store artwork ID for success page
-        successUrl: `/checkout/success?artworkId=${artwork.id}` // Redirect to success page after payment
-      }
-    })
+    // Checkout functionality removed - needs to be re-implemented
+    console.log("Purchase functionality disabled - payment system needs to be installed")
   }
 
   if (!isPurchased) {
@@ -61,11 +48,10 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
           </p>
           <div className="space-y-3">
             <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handlePurchase}
-              disabled={isNavigating} // Disable button while checkout is being created
-              whileHover={{ scale: isNavigating ? 1 : 1.02 }}
-              whileTap={{ scale: isNavigating ? 1 : 0.98 }}
-              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
             >
               <Image
                 src="/images/cash-app.png"
@@ -75,7 +61,7 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
                 className="object-contain drop-shadow-none"
                 style={{ filter: 'none', boxShadow: 'none' }}
               />
-              {isNavigating ? 'Creating checkout…' : 'Pay With Cashapp'}
+              Pay With Cashapp
             </motion.button>
             <Link
               href="/"

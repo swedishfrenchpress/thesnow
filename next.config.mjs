@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-import withMdkCheckout from '@moneydevkit/nextjs/next-plugin'
-
 const nextConfig = {}
 
-export default withMdkCheckout(nextConfig)
+export default nextConfig
