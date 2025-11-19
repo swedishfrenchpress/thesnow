@@ -1,0 +1,9 @@
+{
+  "name": "memoria",
+  "git": {
+    "deploymentEnabled": {
+      "live": true
+    }
+  }
+}
+
