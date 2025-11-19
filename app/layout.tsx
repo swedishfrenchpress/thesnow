@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   keywords: ["Bitcoin", "AI Art", "Midjourney", "Digital Art", "NFT", "Cryptocurrency"],
   openGraph: {
     title: "Memoria",
-    description: "Exclusive collection of AI-generated artwork. Purchase unique digital art with Bitcoin.",
+    description: "Alternative realities that should exist. Sci-fi worlds made in Midjourney, available to purchase with Bitcoin.",
     images: [
       {
         url: "/images/og-image.jpg",
