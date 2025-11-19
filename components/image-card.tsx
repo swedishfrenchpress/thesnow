@@ -16,6 +16,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Artwork } from "@/lib/images"
 import { useState, useEffect } from "react"
+import { useCheckout } from "@moneydevkit/nextjs"
 
 interface ImageCardProps {
   artwork: Artwork
@@ -25,6 +26,8 @@ interface ImageCardProps {
 export function ImageCard({ artwork, index }: ImageCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isPurchased, setIsPurchased] = useState(false)
+  // Initialize the checkout hook - this provides navigate function and loading state
+  const { navigate, isNavigating } = useCheckout()
 
   // Check if this artwork has been purchased (stored in localStorage)
   useEffect(() => {
@@ -60,10 +63,19 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
   }, [artwork.id])
   
   // Handle purchase button click
-  // TODO: Re-implement checkout when MoneyDevKit is reinstalled
+  // This creates a checkout session and navigates to the checkout page
   const handlePurchase = () => {
-    // Checkout functionality removed - needs to be re-implemented
-    console.log("Purchase functionality disabled - MoneyDevKit needs to be reinstalled")
+    navigate({
+      title: `Purchase ${artwork.title}`,
+      description: artwork.description,
+      amount: 20, // 20 satoshis as requested
+      currency: 'SAT', // Using satoshis (SAT) instead of USD
+      metadata: {
+        type: 'artwork_purchase',
+        artworkId: artwork.id, // Store artwork ID for success page
+        successUrl: `/checkout/success?artworkId=${artwork.id}` // Redirect to success page after payment
+      }
+    })
   }
 
   return (
@@ -175,9 +187,10 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
             {!isPurchased ? (
               <motion.button
                 onClick={handlePurchase}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
+                disabled={isNavigating} // Disable button while checkout is being created
+                whileHover={{ scale: isNavigating ? 1 : 1.02 }}
+                whileTap={{ scale: isNavigating ? 1 : 0.98 }}
+                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Image
                   src="/images/cash-app.png"
@@ -187,7 +200,7 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
                   className="object-contain drop-shadow-none"
                   style={{ filter: 'none', boxShadow: 'none' }}
                 />
-                Pay With Cashapp
+                {isNavigating ? 'Creating checkout…' : 'Pay With Cashapp'}
               </motion.button>
             ) : (
               <div className="space-y-3">

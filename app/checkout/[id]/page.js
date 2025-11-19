@@ -2,33 +2,18 @@
 
 /**
  * Dynamic checkout page
- * TODO: Re-implement MoneyDevKit checkout when package is reinstalled
- * This page is accessed when a user clicks "Purchase" on an artwork
- * The [id] in the path is the checkout session ID
+ * This page renders the Money Dev Kit hosted checkout interface
+ * The [id] in the path is the checkout session ID created by useCheckout
  */
 
-import { useRouter } from "next/navigation";
+import { Checkout } from "@moneydevkit/nextjs";
+import { use } from "react";
 
 export default function CheckoutPage({ params }) {
-  const router = useRouter();
   // Extract the checkout ID from the URL params
-  const { id } = params;
+  // Using React's use() hook to unwrap the params promise (Next.js 15 requirement)
+  const { id } = use(params);
 
-  return (
-    <div className="min-h-screen pt-16 flex items-center justify-center px-4">
-      <div className="text-center space-y-4">
-        <h1 className="text-2xl font-bold">Checkout Unavailable</h1>
-        <p className="text-foreground/70">
-          MoneyDevKit checkout has been removed. Please reinstall to enable payments.
-        </p>
-        <button
-          onClick={() => router.push("/")}
-          className="px-6 py-3 border border-foreground/20 rounded hover:border-foreground/40 transition-colors"
-        >
-          Return to Gallery
-        </button>
-      </div>
-    </div>
-  );
+  return <Checkout id={id} />;
 }
 
