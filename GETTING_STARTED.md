@@ -52,7 +52,7 @@ You should now see your beautiful Bitcoin art gallery website! 🎨
 Let me explain what each folder does:
 
 ```
-thesnow/
+memoria/
 │
 ├── app/                    # The main application folder
 │   ├── layout.tsx         # The wrapper for all pages (includes navigation)

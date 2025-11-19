@@ -23,7 +23,7 @@ export function Footer() {
               whileHover={{ scale: 1.05 }}
               className="text-xl font-bold tracking-tight mb-3"
             >
-              THE SNOW
+              memoria
             </motion.div>
             <p className="text-sm text-foreground/60">
             Digital art from my brain.

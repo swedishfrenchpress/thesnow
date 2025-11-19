@@ -1,21 +1,33 @@
 "use client";
 
 /**
- * Dynamic checkout page that renders the MDK Lightning payment interface
+ * Dynamic checkout page
+ * TODO: Re-implement MoneyDevKit checkout when package is reinstalled
  * This page is accessed when a user clicks "Purchase" on an artwork
- * The [id] in the path is the checkout session ID created by MDK
+ * The [id] in the path is the checkout session ID
  */
 
-import { Checkout } from "@moneydevkit/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutPage({ params }) {
+  const router = useRouter();
   // Extract the checkout ID from the URL params
   const { id } = params;
 
   return (
-    <div className="min-h-screen pt-16">
-      {/* MDK Checkout component handles the entire payment flow */}
-      <Checkout id={id} />
+    <div className="min-h-screen pt-16 flex items-center justify-center px-4">
+      <div className="text-center space-y-4">
+        <h1 className="text-2xl font-bold">Checkout Unavailable</h1>
+        <p className="text-foreground/70">
+          MoneyDevKit checkout has been removed. Please reinstall to enable payments.
+        </p>
+        <button
+          onClick={() => router.push("/")}
+          className="px-6 py-3 border border-foreground/20 rounded hover:border-foreground/40 transition-colors"
+        >
+          Return to Gallery
+        </button>
+      </div>
     </div>
   );
 }

@@ -6,11 +6,9 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { artworks, Artwork } from "@/lib/images"
 import { motion } from "framer-motion"
-import { useCheckout } from "@moneydevkit/nextjs"
 
 function ArtworkContent({ artwork }: { artwork: Artwork }) {
   const [isPurchased, setIsPurchased] = useState(false)
-  const { navigate, isNavigating } = useCheckout()
   const router = useRouter()
 
   useEffect(() => {
@@ -33,19 +31,10 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
     }
   }, [artwork.id])
 
+  // TODO: Re-implement checkout when MoneyDevKit is reinstalled
   const handlePurchase = () => {
-    navigate({
-      title: `Purchase "${artwork.title}"`,
-      description: artwork.description,
-      amount: artwork.price,
-      currency: "SAT",
-      metadata: {
-        type: "artwork_purchase",
-        artworkId: artwork.id,
-        artworkTitle: artwork.title,
-        successUrl: `/checkout/success?artworkId=${artwork.id}`,
-      },
-    })
+    // Checkout functionality removed - needs to be re-implemented
+    console.log("Purchase functionality disabled - MoneyDevKit needs to be reinstalled")
   }
 
   if (!isPurchased) {
@@ -59,13 +48,20 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
           </p>
           <div className="space-y-3">
             <motion.button
-              whileHover={{ scale: isNavigating ? 1 : 1.02 }}
-              whileTap={{ scale: isNavigating ? 1 : 0.98 }}
-              disabled={isNavigating}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handlePurchase}
-              className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-50"
+              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
             >
-              {isNavigating ? "Creating checkout..." : "Purchase to Unlock"}
+              <Image
+                src="/images/cash-app.png"
+                alt="Cash App"
+                width={20}
+                height={20}
+                className="object-contain drop-shadow-none"
+                style={{ filter: 'none', boxShadow: 'none' }}
+              />
+              Pay With Cashapp
             </motion.button>
             <Link
               href="/"

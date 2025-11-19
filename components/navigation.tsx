@@ -43,7 +43,7 @@ export function Navigation() {
               whileHover={{ scale: 1.05 }}
               className="text-xl font-bold tracking-tight"
             >
-              THE SNOW
+              memoria
             </motion.div>
           </Link>
 

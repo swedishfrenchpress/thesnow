@@ -1,25 +1,15 @@
 /**
- * API route to fetch checkout data from MDK
- * This allows us to call the server-side getCheckout function from the client
+ * API route to fetch checkout data
+ * TODO: Re-implement MoneyDevKit checkout when package is reinstalled
  */
 
-import { getCheckout } from "@moneydevkit/nextjs";
 import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
-  try {
-    const { id } = params;
-    
-    // Fetch checkout data from MDK
-    const checkout = await getCheckout(id);
-    
-    return NextResponse.json(checkout);
-  } catch (error) {
-    console.error("Error fetching checkout:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch checkout" },
-      { status: 500 }
-    );
-  }
+  // MoneyDevKit has been removed - this endpoint needs to be re-implemented
+  return NextResponse.json(
+    { error: "Checkout functionality unavailable - MoneyDevKit needs to be reinstalled" },
+    { status: 503 }
+  );
 }
 
