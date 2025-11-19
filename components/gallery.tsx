@@ -29,7 +29,7 @@ export function Gallery() {
           Alternative realities that should exist.
           </h2>
           <p className="text-lg text-foreground/70 max-w-3xl mx-auto">
-          Made these in Midjourney, they&apos;re a window into my head. The kind of sci-fi world I think would be cool to see. You can buy them if you want. Payments powered by <a href="http://moneydevkit.com/" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline">Money Dev Kit</a>.
+          Made these in Midjourney, they&apos;re a window into my head. The kind of sci-fi world I think would be cool to see. You can buy them if you want.
           </p>
         </motion.div>
 

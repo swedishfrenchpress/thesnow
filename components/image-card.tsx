@@ -7,7 +7,6 @@
  * - Price in BTC/sats
  * - Artwork metadata (title, dimensions, date)
  * - Hover animations
- * - MDK Lightning checkout for purchases
  * 
  * The blur effect protects the full-resolution image until payment is made
  */
@@ -17,7 +16,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { Artwork } from "@/lib/images"
 import { useState, useEffect } from "react"
-import { useCheckout } from "@moneydevkit/nextjs"
 
 interface ImageCardProps {
   artwork: Artwork
@@ -27,9 +25,6 @@ interface ImageCardProps {
 export function ImageCard({ artwork, index }: ImageCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isPurchased, setIsPurchased] = useState(false)
-  
-  // MDK checkout hook for Lightning payments
-  const { navigate, isNavigating } = useCheckout()
 
   // Check if this artwork has been purchased (stored in localStorage)
   useEffect(() => {
@@ -65,19 +60,10 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
   }, [artwork.id])
   
   // Handle purchase button click
+  // TODO: Re-implement checkout when MoneyDevKit is reinstalled
   const handlePurchase = () => {
-    navigate({
-      title: `Purchase "${artwork.title}"`,
-      description: artwork.description,
-      amount: artwork.price,        // Amount in sats
-      currency: 'SAT',              // Bitcoin satoshis
-      metadata: {
-        type: 'artwork_purchase',
-        artworkId: artwork.id,
-        artworkTitle: artwork.title,
-        successUrl: `/checkout/success?artworkId=${artwork.id}`
-      }
-    })
+    // Checkout functionality removed - needs to be re-implemented
+    console.log("Purchase functionality disabled - MoneyDevKit needs to be reinstalled")
   }
 
   return (
@@ -189,12 +175,19 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
             {!isPurchased ? (
               <motion.button
                 onClick={handlePurchase}
-                disabled={isNavigating}
-                whileHover={{ scale: isNavigating ? 1 : 1.02 }}
-                whileTap={{ scale: isNavigating ? 1 : 0.98 }}
-                className="w-full py-3 bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
               >
-                {isNavigating ? 'Creating checkout...' : 'Purchase'}
+                <Image
+                  src="/images/cash-app.png"
+                  alt="Cash App"
+                  width={20}
+                  height={20}
+                  className="object-contain drop-shadow-none"
+                  style={{ filter: 'none', boxShadow: 'none' }}
+                />
+                Pay With Cashapp
               </motion.button>
             ) : (
               <div className="space-y-3">

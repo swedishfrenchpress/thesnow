@@ -32,7 +32,7 @@ A modern, minimalist website for selling AI-generated artwork using Bitcoin paym
 1. Clone the repository:
 ```bash
 git clone <your-repo-url>
-cd thesnow
+cd memoria
 ```
 
 2. Install dependencies:
@@ -50,7 +50,7 @@ npm run dev
 ## Project Structure
 
 ```
-thesnow/
+memoria/
 ├── app/                    # Next.js App Router
 │   ├── layout.tsx         # Root layout with theme provider
 │   ├── page.tsx           # Home page

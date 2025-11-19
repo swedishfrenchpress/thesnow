@@ -11,7 +11,7 @@ git add .
 git commit -m "Initial commit - Bitcoin art gallery"
 
 # Create a new repo on GitHub, then:
-git remote add origin https://github.com/YOUR_USERNAME/thesnow.git
+git remote add origin https://github.com/YOUR_USERNAME/memoria.git
 git branch -M main
 git push -u origin main
 ```
@@ -21,7 +21,7 @@ git push -u origin main
 1. Go to [vercel.com](https://vercel.com)
 2. Sign in with GitHub
 3. Click "Add New..." → "Project"
-4. Import your `thesnow` repository
+4. Import your `memoria` repository
 5. Click "Deploy" (Vercel auto-detects Next.js settings)
 6. Wait ~2 minutes
 7. Your site is live! 🎉
@@ -46,7 +46,7 @@ npm install -g vercel
 
 ### Deploy:
 ```bash
-cd /Users/erik/Documents/GitHub/thesnow
+cd /Users/erik/Documents/GitHub/memoria
 vercel
 ```
 

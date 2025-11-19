@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navigation } from "@/components/navigation";
 
 export const metadata: Metadata = {
-  title: "Erik's Bitcoin Art Gallery | AI-Generated Masterpieces",
-  description: "Exclusive collection of AI-generated artwork by Erik. Purchase unique digital art with Bitcoin.",
+  title: "Memoria",
+  description: "Exclusive collection of AI-generated artwork. Purchase unique digital art with Bitcoin.",
   keywords: ["Bitcoin", "AI Art", "Midjourney", "Digital Art", "NFT", "Cryptocurrency"],
 };
 
