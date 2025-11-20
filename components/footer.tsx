@@ -16,7 +16,7 @@ export function Footer() {
   return (
     <footer className="py-12 px-4 sm:px-6 lg:px-8 mt-20">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
             <motion.div
@@ -57,7 +57,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Info */}
+          {/* Payment */}
           <div>
             <h3 className="font-semibold mb-3">Payment</h3>
             <p className="text-sm text-foreground/60 mb-3">
@@ -70,6 +70,20 @@ export function Footer() {
                 moneydevkit
               </a>.
             </p>
+          </div>
+
+          {/* Steal this art */}
+          <div>
+            <h3 className="font-semibold mb-3">Steal this art</h3>
+            <p className="text-sm text-foreground/60 mb-2">
+              Use your browser&apos;s inspect mode to snipe all the images.
+            </p>
+            <ol className="text-xs text-foreground/50 space-y-1 list-decimal list-inside">
+              <li>Right-click on a blurred image</li>
+              <li>Select &quot;Inspect&quot; or &quot;Inspect Element&quot;</li>
+              <li>Find the image element in the code</li>
+              <li>Copy the image URL from the src attribute</li>
+            </ol>
           </div>
         </div>
 
