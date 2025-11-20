@@ -7,6 +7,7 @@
  * - Price in BTC/sats
  * - Artwork metadata (title, dimensions, date)
  * - Hover animations
+ * - Lightning payments via Money Dev Kit
  * 
  * The blur effect protects the full-resolution image until payment is made
  */
@@ -16,6 +17,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Artwork } from "@/lib/images"
 import { useState, useEffect } from "react"
+import { useCheckout } from '@moneydevkit/nextjs'
 
 interface ImageCardProps {
   artwork: Artwork
@@ -25,6 +27,11 @@ interface ImageCardProps {
 export function ImageCard({ artwork, index }: ImageCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isPurchased, setIsPurchased] = useState(false)
+  
+  // Use the Money Dev Kit checkout hook
+  // This provides the navigate function to create checkout sessions
+  // and isNavigating state to show loading UI
+  const { navigate, isNavigating } = useCheckout()
 
   // Check if this artwork has been purchased (stored in localStorage)
   useEffect(() => {
@@ -60,10 +67,30 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
   }, [artwork.id])
   
   // Handle purchase button click
-  // Non-functional for now - checkout functionality removed
+  // This creates a Lightning checkout session via Money Dev Kit
   const handlePurchase = (e: React.MouseEvent) => {
     e.preventDefault()
-    // Button does nothing - checkout functionality removed
+    
+    // Navigate to checkout page with payment details
+    navigate({
+      // Title shown to the buyer on checkout page
+      title: `Purchase: ${artwork.title}`,
+      // Description of what they're buying
+      description: artwork.description,
+      // Amount in sats (20 sats as requested)
+      amount: 20,
+      // Currency is Bitcoin sats
+      currency: 'SAT',
+      // Metadata to track this purchase
+      // This data will be available in webhooks and success page
+      metadata: {
+        type: 'artwork_purchase',
+        artworkId: artwork.id,
+        artworkTitle: artwork.title,
+        // Where to redirect after successful payment
+        successUrl: `/checkout/success?artworkId=${artwork.id}`
+      }
+    })
   }
 
   return (
@@ -175,19 +202,33 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
             {!isPurchased ? (
               <motion.button
                 onClick={handlePurchase}
+                disabled={isNavigating}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
+                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Image
-                  src="/images/cash-app.png"
-                  alt="Cash App"
-                  width={20}
-                  height={20}
-                  className="object-contain drop-shadow-none"
-                  style={{ filter: 'none', boxShadow: 'none' }}
-                />
-                Pay With Cashapp
+                {/* Show loading state while creating checkout session */}
+                {isNavigating ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Creating checkout...
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      src="/images/cash-app.png"
+                      alt="Cash App"
+                      width={20}
+                      height={20}
+                      className="object-contain drop-shadow-none"
+                      style={{ filter: 'none', boxShadow: 'none' }}
+                    />
+                    Pay With Cashapp
+                  </>
+                )}
               </motion.button>
             ) : (
               <div className="space-y-3">
