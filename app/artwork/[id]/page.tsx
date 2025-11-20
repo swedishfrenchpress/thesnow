@@ -82,15 +82,16 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
       await navigate({
         title: artwork.title, // Title shown on the checkout page
         amount: artwork.price, // 20 sats per artwork
+        currency: 'SAT', // Specifying we're using satoshis (not USD cents)
         description: `Purchase: ${artwork.title}`, // Description shown to user
         // Metadata is extra information attached to this payment
         // It helps us identify what was purchased when the webhook fires
         metadata: {
           artworkId: artwork.id,
           artworkTitle: artwork.title,
+          // After successful payment, redirect to this URL
+          successUrl: `${window.location.origin}/artwork/${artwork.id}?payment=success`,
         },
-        // After successful payment, redirect to this URL
-        successUrl: `${window.location.origin}/artwork/${artwork.id}?payment=success`,
       })
     } catch (error) {
       // Log any errors for debugging
