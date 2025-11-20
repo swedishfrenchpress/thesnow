@@ -6,16 +6,10 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { artworks, Artwork } from "@/lib/images"
 import { motion } from "framer-motion"
-import { useCheckout } from "@moneydevkit/nextjs"
 
 function ArtworkContent({ artwork }: { artwork: Artwork }) {
   const [isPurchased, setIsPurchased] = useState(false)
   const router = useRouter()
-  
-  // Initialize the MDK checkout hook
-  // This provides the navigate function to create checkouts
-  // and isNavigating to show loading state
-  const { navigate, isNavigating } = useCheckout()
 
   useEffect(() => {
     const purchased = JSON.parse(localStorage.getItem("purchasedArtworks") || "[]")
@@ -38,23 +32,12 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
   }, [artwork.id])
 
   // Handle the purchase button click
-  // Creates a checkout session with MDK and redirects to the checkout page
+  // Payment functionality has been removed
   const handlePurchase = (e: React.MouseEvent) => {
     e.preventDefault()
-    
-    // Navigate to MDK checkout with payment details
-    navigate({
-      title: artwork.title, // Display the artwork title in checkout
-      description: artwork.description, // Show artwork description
-      amount: artwork.price, // Price in satoshis (sats) - 20 sats per artwork
-      currency: 'SAT', // Using satoshis as the currency
-      metadata: {
-        // Custom data to track this purchase
-        artworkId: artwork.id, // Store artwork ID for webhook processing
-        type: 'artwork_purchase', // Identify this as an artwork purchase
-        successUrl: `/checkout/success?artworkId=${artwork.id}` // Where to redirect after payment
-      }
-    })
+    // Payment system has been removed
+    // You can integrate a new payment system here
+    console.log('Purchase functionality removed')
   }
 
   if (!isPurchased) {
@@ -71,8 +54,8 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handlePurchase}
-              disabled={isNavigating}
-              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={true}
+              className="w-full py-3 bg-gray-400 text-white font-semibold transition-colors cursor-not-allowed flex items-center justify-center gap-2 opacity-50"
             >
               <Image
                 src="/images/cash-app.png"
@@ -82,7 +65,7 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
                 className="object-contain drop-shadow-none"
                 style={{ filter: 'none', boxShadow: 'none' }}
               />
-              {isNavigating ? 'Creating checkout...' : 'Pay With Cashapp'}
+              Payment System Removed
             </motion.button>
             <Link
               href="/"
