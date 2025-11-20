@@ -6,14 +6,10 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { artworks, Artwork } from "@/lib/images"
 import { motion } from "framer-motion"
-import { useCheckout } from '@moneydevkit/nextjs'
 
 function ArtworkContent({ artwork }: { artwork: Artwork }) {
   const [isPurchased, setIsPurchased] = useState(false)
   const router = useRouter()
-  
-  // MoneyDevKit checkout hook for handling payments
-  const { navigate, isNavigating } = useCheckout()
 
   useEffect(() => {
     const purchased = JSON.parse(localStorage.getItem("purchasedArtworks") || "[]")
@@ -35,22 +31,10 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
     }
   }, [artwork.id])
 
-  // Handle purchase - create MDK checkout session
+  // Non-functional for now - checkout functionality removed
   const handlePurchase = (e: React.MouseEvent) => {
     e.preventDefault()
-    
-    // Create a checkout session with MoneyDevKit
-    navigate({
-      title: artwork.title,
-      description: artwork.description,
-      amount: artwork.price,              // 20 sats
-      currency: 'SAT',                    // Bitcoin satoshis
-      metadata: {
-        artworkId: artwork.id,            // Track which artwork was purchased
-        type: 'artwork_purchase',
-        successUrl: '/checkout/success'   // Post-payment redirect
-      }
-    })
+    // Button does nothing - checkout functionality removed
   }
 
   if (!isPurchased) {
@@ -67,8 +51,7 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handlePurchase}
-              disabled={isNavigating}
-              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
             >
               <Image
                 src="/images/cash-app.png"
@@ -78,7 +61,7 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
                 className="object-contain drop-shadow-none"
                 style={{ filter: 'none', boxShadow: 'none' }}
               />
-              {isNavigating ? 'Creating checkout…' : 'Pay With Cashapp'}
+              Pay With Cashapp
             </motion.button>
             <Link
               href="/"

@@ -7,7 +7,6 @@
  * - Price in BTC/sats
  * - Artwork metadata (title, dimensions, date)
  * - Hover animations
- * - Lightning payments via MoneyDevKit
  * 
  * The blur effect protects the full-resolution image until payment is made
  */
@@ -17,7 +16,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { Artwork } from "@/lib/images"
 import { useState, useEffect } from "react"
-import { useCheckout } from '@moneydevkit/nextjs'
 
 interface ImageCardProps {
   artwork: Artwork
@@ -27,10 +25,6 @@ interface ImageCardProps {
 export function ImageCard({ artwork, index }: ImageCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isPurchased, setIsPurchased] = useState(false)
-  
-  // MoneyDevKit checkout hook
-  // This handles creating payment sessions and navigating to the checkout page
-  const { navigate, isNavigating } = useCheckout()
 
   // Check if this artwork has been purchased (stored in localStorage)
   useEffect(() => {
@@ -65,22 +59,11 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
     }
   }, [artwork.id])
   
-  // Handle purchase button click - triggers MDK checkout
+  // Handle purchase button click
+  // Non-functional for now - checkout functionality removed
   const handlePurchase = (e: React.MouseEvent) => {
     e.preventDefault()
-    
-    // Create a checkout session with MDK
-    navigate({
-      title: artwork.title,                    // Displayed to buyer
-      description: artwork.description,         // Additional context
-      amount: artwork.price,                   // 20 sats
-      currency: 'SAT',                         // Bitcoin satoshis
-      metadata: {
-        artworkId: artwork.id,                 // For webhook processing
-        type: 'artwork_purchase',               // Identify this transaction type
-        successUrl: '/checkout/success'        // Where to redirect after payment
-      }
-    })
+    // Button does nothing - checkout functionality removed
   }
 
   return (
@@ -192,10 +175,9 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
             {!isPurchased ? (
               <motion.button
                 onClick={handlePurchase}
-                disabled={isNavigating}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
               >
                 <Image
                   src="/images/cash-app.png"
@@ -205,7 +187,7 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
                   className="object-contain drop-shadow-none"
                   style={{ filter: 'none', boxShadow: 'none' }}
                 />
-                {isNavigating ? 'Creating checkout…' : 'Pay With Cashapp'}
+                Pay With Cashapp
               </motion.button>
             ) : (
               <div className="space-y-3">
