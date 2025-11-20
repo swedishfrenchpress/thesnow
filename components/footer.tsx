@@ -61,7 +61,14 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-3">Payment</h3>
             <p className="text-sm text-foreground/60 mb-3">
-              Lightning checkout is being rebuilt. For now, reach out directly if you would like to collect a piece.
+              Powered by <a
+                href="https://moneydevkit.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-dotted underline-offset-4 hover:text-orange-500 transition-colors"
+              >
+                moneydevkit
+              </a>.
             </p>
           </div>
         </div>
