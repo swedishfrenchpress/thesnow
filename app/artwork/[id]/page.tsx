@@ -6,47 +6,15 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { artworks, Artwork } from "@/lib/images"
 import { motion } from "framer-motion"
-import { useCheckout } from "@moneydevkit/nextjs"
 
 function ArtworkContent({ artwork }: { artwork: Artwork }) {
   const [isPurchased, setIsPurchased] = useState(false)
   const router = useRouter()
-  
-  // Initialize the checkout hook from Money Dev Kit
-  // This gives us the navigate function to start a payment
-  // and isNavigating to show loading state
-  const { navigate, isNavigating } = useCheckout()
 
   useEffect(() => {
-    // Check if this artwork has been purchased before
     const purchased = JSON.parse(localStorage.getItem("purchasedArtworks") || "[]")
     setIsPurchased(purchased.includes(artwork.id))
 
-    // Check if we're returning from a successful payment
-    // The URL will have ?payment=success if the payment completed
-    const urlParams = new URLSearchParams(window.location.search)
-    if (urlParams.get('payment') === 'success') {
-      // Mark this artwork as purchased
-      const purchasedArtworks = JSON.parse(localStorage.getItem("purchasedArtworks") || "[]")
-      if (!purchasedArtworks.includes(artwork.id)) {
-        purchasedArtworks.push(artwork.id)
-        localStorage.setItem("purchasedArtworks", JSON.stringify(purchasedArtworks))
-        setIsPurchased(true)
-        
-        // Dispatch a custom event so other components know about the purchase
-        window.dispatchEvent(
-          new CustomEvent("artworkPurchased", {
-            detail: { artworkId: artwork.id }
-          })
-        )
-      }
-      
-      // Clean up the URL by removing the payment parameter
-      // This prevents re-triggering if the user refreshes the page
-      window.history.replaceState({}, '', `/artwork/${artwork.id}`)
-    }
-
-    // Listen for purchase events from other tabs or windows
     const handlePurchaseEvent = (event: Event) => {
       const customEvent = event as CustomEvent<{ artworkId: string }>
       if (customEvent.detail?.artworkId === artwork.id) {
@@ -63,41 +31,10 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
     }
   }, [artwork.id])
 
-  /**
-   * Handle Purchase Button Click
-   * 
-   * This function is called when the user clicks "Pay With Cashapp"
-   * It initiates a Lightning Network payment using Money Dev Kit
-   * 
-   * How it works:
-   * 1. User clicks the button
-   * 2. We call navigate() with the payment details
-   * 3. User is taken to a payment page to complete the transaction
-   * 4. After payment, they're redirected back to our success page
-   * 5. The webhook confirms the payment and we unlock the artwork
-   */
-  const handlePurchase = async () => {
-    try {
-      // Navigate to the checkout page with payment details
-      await navigate({
-        title: artwork.title, // Title shown on the checkout page
-        amount: artwork.price, // 20 sats per artwork
-        currency: 'SAT', // Specifying we're using satoshis (not USD cents)
-        description: `Purchase: ${artwork.title}`, // Description shown to user
-        // Metadata is extra information attached to this payment
-        // It helps us identify what was purchased when the webhook fires
-        metadata: {
-          artworkId: artwork.id,
-          artworkTitle: artwork.title,
-          // After successful payment, redirect to this URL
-          successUrl: `${window.location.origin}/artwork/${artwork.id}?payment=success`,
-        },
-      })
-    } catch (error) {
-      // Log any errors for debugging
-      console.error("Payment navigation failed:", error)
-      alert("Failed to initiate payment. Please try again.")
-    }
+  // TODO: Re-implement checkout when payment system is installed
+  const handlePurchase = () => {
+    // Checkout functionality removed - needs to be re-implemented
+    console.log("Purchase functionality disabled - payment system needs to be installed")
   }
 
   if (!isPurchased) {
@@ -114,30 +51,17 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handlePurchase}
-              disabled={isNavigating}
-              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
             >
-              {isNavigating ? (
-                <>
-                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <Image
-                    src="/images/cash-app.png"
-                    alt="Cash App"
-                    width={20}
-                    height={20}
-                    className="object-contain drop-shadow-none"
-                    style={{ filter: 'none', boxShadow: 'none' }}
-                  />
-                  Pay {artwork.price} sats with Lightning
-                </>
-              )}
+              <Image
+                src="/images/cash-app.png"
+                alt="Cash App"
+                width={20}
+                height={20}
+                className="object-contain drop-shadow-none"
+                style={{ filter: 'none', boxShadow: 'none' }}
+              />
+              Pay With Cashapp
             </motion.button>
             <Link
               href="/"
