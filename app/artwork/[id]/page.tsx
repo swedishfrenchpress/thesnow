@@ -9,6 +9,7 @@ import { motion } from "framer-motion"
 
 function ArtworkContent({ artwork }: { artwork: Artwork }) {
   const [isPurchased, setIsPurchased] = useState(false)
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -31,10 +32,41 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
     }
   }, [artwork.id])
 
-  // TODO: Re-implement checkout when payment system is installed
-  const handlePurchase = () => {
-    // Checkout functionality removed - needs to be re-implemented
-    console.log("Purchase functionality disabled - payment system needs to be installed")
+  // Handle purchase button click
+  // This initiates the MDK checkout flow
+  const handlePurchase = async () => {
+    try {
+      // Show loading state
+      setIsCheckingOut(true)
+      
+      // Call our API to create a checkout session
+      const response = await fetch('/api/mdk/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          artworkId: artwork.id,
+          amount: 20, // 20 satoshis per image as requested
+          title: artwork.title,
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session')
+      }
+      
+      const data = await response.json()
+      
+      // Redirect user to MDK checkout page
+      // They'll pay with CashApp/Lightning there
+      window.location.href = data.checkoutUrl
+      
+    } catch (error) {
+      console.error('Checkout error:', error)
+      alert('Unable to start checkout. Please try again.')
+      setIsCheckingOut(false)
+    }
   }
 
   if (!isPurchased) {
@@ -51,17 +83,24 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handlePurchase}
-              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2"
+              disabled={isCheckingOut}
+              className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Image
-                src="/images/cash-app.png"
-                alt="Cash App"
-                width={20}
-                height={20}
-                className="object-contain drop-shadow-none"
-                style={{ filter: 'none', boxShadow: 'none' }}
-              />
-              Pay With Cashapp
+              {isCheckingOut ? (
+                <>Processing...</>
+              ) : (
+                <>
+                  <Image
+                    src="/images/cash-app.png"
+                    alt="Cash App"
+                    width={20}
+                    height={20}
+                    className="object-contain drop-shadow-none"
+                    style={{ filter: 'none', boxShadow: 'none' }}
+                  />
+                  Pay With Cashapp
+                </>
+              )}
             </motion.button>
             <Link
               href="/"
