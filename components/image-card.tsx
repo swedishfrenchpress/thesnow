@@ -4,12 +4,13 @@
  * ImageCard component - Displays an individual artwork card
  * Features:
  * - Blurred image preview (until purchased)
- * - Price in BTC/sats
+ * - Price in USD ($0.20)
  * - Artwork metadata (title, dimensions, date)
  * - Hover animations
- * - Lightning payments via Money Dev Kit
+ * - Lightning payments via Money Dev Kit (supports Cashapp, Revolut, Bitcoin wallets)
  * 
  * The blur effect protects the full-resolution image until payment is made
+ * MDK automatically converts USD to Lightning/sats based on current BTC price
  */
 
 import { motion } from "framer-motion"
@@ -68,6 +69,8 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
   
   // Handle purchase button click
   // This creates a Lightning checkout session via Money Dev Kit
+  // All payment methods (Cashapp, Revolut, Bitcoin) use the same checkout flow
+  // MDK handles currency conversion automatically
   const handlePurchase = (e: React.MouseEvent) => {
     e.preventDefault()
     
@@ -77,10 +80,11 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
       title: `Purchase: ${artwork.title}`,
       // Description of what they're buying
       description: artwork.description,
-      // Amount in sats (20 sats as requested)
+      // Amount in USD cents (20 cents = $0.20)
+      // MDK will automatically convert this to sats based on current BTC price
       amount: 20,
-      // Currency is Bitcoin sats
-      currency: 'SAT',
+      // Currency is USD - MDK handles conversion to Lightning/sats
+      currency: 'USD',
       // Metadata to track this purchase
       // This data will be available in webhooks and success page
       metadata: {
@@ -193,43 +197,79 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
               <div>
                 <p className="text-foreground/50 text-xs mb-1">Price</p>
                 <p className="text-2xl font-bold text-orange-500 font-mono">
-                  ₿{artwork.price.toLocaleString()}
+                  $0.20
                 </p>
               </div>
             </div>
 
-            {/* Purchase Button - Only show if not purchased */}
+            {/* Purchase Buttons - Only show if not purchased */}
             {!isPurchased ? (
-              <motion.button
-                onClick={handlePurchase}
-                disabled={isNavigating}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-[#00D632] text-white font-semibold transition-colors hover:bg-[#00C02E] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {/* Show loading state while creating checkout session */}
-                {isNavigating ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Creating checkout...
-                  </>
-                ) : (
-                  <>
-                    <Image
-                      src="/images/cash-app.png"
-                      alt="Cash App"
-                      width={20}
-                      height={20}
-                      className="object-contain drop-shadow-none"
-                      style={{ filter: 'none', boxShadow: 'none' }}
-                    />
-                    Pay With Cashapp
-                  </>
-                )}
-              </motion.button>
+              <div className="grid grid-cols-2 gap-3">
+                {/* Cash App Pay Button */}
+                <motion.button
+                  onClick={handlePurchase}
+                  disabled={isNavigating}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full p-4 bg-white border border-gray-300 rounded transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {/* Show loading state while creating checkout session */}
+                  {isNavigating ? (
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5 text-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span className="text-xs text-foreground">Creating...</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-start gap-2">
+                      <div className="h-8 flex items-center">
+                        <Image
+                          src="/images/cash-app.svg"
+                          alt="Cash App"
+                          width={32}
+                          height={32}
+                          className="object-contain"
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-black">Cash App Pay</span>
+                    </div>
+                  )}
+                </motion.button>
+
+                {/* Revolut Pay Button */}
+                <motion.button
+                  onClick={handlePurchase}
+                  disabled={isNavigating}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full p-4 bg-white border border-gray-300 rounded transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isNavigating ? (
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5 text-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span className="text-xs text-foreground">Creating...</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-start gap-2">
+                      <div className="h-8 flex items-center">
+                        <Image
+                          src="/images/Revolut.svg"
+                          alt="Revolut"
+                          width={80}
+                          height={32}
+                          className="object-contain"
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-black">Revolut Pay</span>
+                    </div>
+                  )}
+                </motion.button>
+              </div>
             ) : (
               <div className="space-y-3">
                 <div className="w-full py-3 bg-green-500/10 border border-green-500/20 text-green-500 font-semibold text-center rounded">
