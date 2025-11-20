@@ -60,10 +60,10 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
   }, [artwork.id])
   
   // Handle purchase button click
-  // TODO: Re-implement checkout when payment system is installed
-  const handlePurchase = () => {
-    // Checkout functionality removed - needs to be re-implemented
-    console.log("Purchase functionality disabled - payment system needs to be installed")
+  // Non-functional for now - checkout functionality removed
+  const handlePurchase = (e: React.MouseEvent) => {
+    e.preventDefault()
+    // Button does nothing - checkout functionality removed
   }
 
   return (
