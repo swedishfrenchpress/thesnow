@@ -6,10 +6,17 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { artworks, Artwork } from "@/lib/images"
 import { motion } from "framer-motion"
+// Import the useCheckout hook from MoneyDevKit to handle Lightning payments
+import { useCheckout } from "@moneydevkit/nextjs"
 
 function ArtworkContent({ artwork }: { artwork: Artwork }) {
   const [isPurchased, setIsPurchased] = useState(false)
   const router = useRouter()
+  
+  // Initialize the MoneyDevKit checkout hook
+  // navigate() creates a checkout session and redirects to the payment page
+  // isNavigating indicates if we're currently creating the checkout session
+  const { navigate, isNavigating } = useCheckout()
 
   useEffect(() => {
     const purchased = JSON.parse(localStorage.getItem("purchasedArtworks") || "[]")
@@ -31,13 +38,31 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
     }
   }, [artwork.id])
 
-  // Handle the purchase button click
-  // Payment functionality has been removed
+  /**
+   * Handle the purchase button click
+   * 
+   * When the user clicks "Pay with Cash App", this function:
+   * 1. Calls navigate() from the useCheckout hook
+   * 2. Creates a Lightning invoice for 20 sats
+   * 3. Redirects the user to the checkout page
+   * 4. After payment, MDK redirects to the success page with artworkId
+   */
   const handlePurchase = (e: React.MouseEvent) => {
     e.preventDefault()
-    // Payment system has been removed
-    // You can integrate a new payment system here
-    console.log('Purchase functionality removed')
+    
+    // Create a checkout session and navigate to the payment page
+    navigate({
+      title: `Purchase: ${artwork.title}`,
+      description: `Unlock full-resolution download of "${artwork.title}"`,
+      amount: 20,              // 20 sats per image (as requested)
+      currency: 'SAT',         // Bitcoin satoshis
+      metadata: {
+        type: 'artwork_purchase',
+        artworkId: artwork.id, // Store artwork ID to track which item was purchased
+        // The success URL will include the artworkId in the query string
+        successUrl: `/checkout/success?artworkId=${artwork.id}`
+      }
+    })
   }
 
   if (!isPurchased) {
@@ -50,12 +75,22 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
             access the full-resolution file anytime.
           </p>
           <div className="space-y-3">
+            {/* 
+              Payment button that triggers Lightning checkout
+              - Shows loading state while creating checkout session
+              - Displays Cash App logo for brand recognition
+              - Disabled while navigating to prevent double-clicks
+            */}
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: isNavigating ? 1 : 1.02 }}
+              whileTap={{ scale: isNavigating ? 1 : 0.98 }}
               onClick={handlePurchase}
-              disabled={true}
-              className="w-full py-3 bg-gray-400 text-white font-semibold transition-colors cursor-not-allowed flex items-center justify-center gap-2 opacity-50"
+              disabled={isNavigating}
+              className={`w-full py-3 font-semibold transition-colors flex items-center justify-center gap-2 ${
+                isNavigating 
+                  ? 'bg-gray-400 text-white cursor-wait opacity-70' 
+                  : 'bg-[#00D632] hover:bg-[#00C12B] text-white cursor-pointer'
+              }`}
             >
               <Image
                 src="/images/cash-app.png"
@@ -65,7 +100,7 @@ function ArtworkContent({ artwork }: { artwork: Artwork }) {
                 className="object-contain drop-shadow-none"
                 style={{ filter: 'none', boxShadow: 'none' }}
               />
-              Payment System Removed
+              {isNavigating ? 'Creating checkout...' : 'Pay with Cash App (20 sats)'}
             </motion.button>
             <Link
               href="/"
