@@ -56,7 +56,7 @@ export function Gallery() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="text-base sm:text-lg md:text-xl text-white/90 max-w-3xl text-center"
             >
-              Made these in Midjourney, they&apos;re a window into my head. The kind of sci-fi world I think would be cool to see. You can buy them if you want.
+              A window info the kind of sci-fi world I think would be cool to see.
             </motion.p>
           </div>
         </motion.div>
