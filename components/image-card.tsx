@@ -204,72 +204,62 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
 
             {/* Purchase Buttons - Only show if not purchased */}
             {!isPurchased ? (
-              <div className="grid grid-cols-2 gap-3">
-                {/* Cash App Pay Button */}
-                <motion.button
-                  onClick={handlePurchase}
-                  disabled={isNavigating}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full p-4 bg-white border border-gray-300 rounded transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {/* Show loading state while creating checkout session */}
-                  {isNavigating ? (
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5 text-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <span className="text-xs text-foreground">Creating...</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-start gap-2">
-                      <div className="h-8 flex items-center">
-                        <Image
-                          src="/images/cash-app.svg"
-                          alt="Cash App"
-                          width={32}
-                          height={32}
-                          className="object-contain"
-                        />
+              <>
+                {/* Show loading state when creating checkout */}
+                {isNavigating ? (
+                  <div className="w-full p-4 bg-white border border-gray-300 rounded flex flex-col items-center justify-center gap-2 min-h-[88px]">
+                    <svg className="animate-spin h-6 w-6 text-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span className="text-sm text-foreground">Starting checkout...</span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Cash App Pay Button */}
+                    <motion.button
+                      onClick={handlePurchase}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full p-4 bg-white border border-gray-300 rounded transition-colors hover:bg-gray-50"
+                    >
+                      <div className="flex flex-col items-start gap-2">
+                        <div className="h-8 flex items-center">
+                          <Image
+                            src="/images/cash-app.svg"
+                            alt="Cash App"
+                            width={32}
+                            height={32}
+                            className="object-contain"
+                          />
+                        </div>
+                        <span className="text-sm font-semibold text-black">Cash App Pay</span>
                       </div>
-                      <span className="text-sm font-semibold text-black">Cash App Pay</span>
-                    </div>
-                  )}
-                </motion.button>
+                    </motion.button>
 
-                {/* Revolut Pay Button */}
-                <motion.button
-                  onClick={handlePurchase}
-                  disabled={isNavigating}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full p-4 bg-white border border-gray-300 rounded transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isNavigating ? (
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5 text-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <span className="text-xs text-foreground">Creating...</span>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-start gap-2">
-                      <div className="h-8 flex items-center">
-                        <Image
-                          src="/images/Revolut.svg"
-                          alt="Revolut"
-                          width={80}
-                          height={32}
-                          className="object-contain"
-                        />
+                    {/* Revolut Pay Button */}
+                    <motion.button
+                      onClick={handlePurchase}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full p-4 bg-white border border-gray-300 rounded transition-colors hover:bg-gray-50"
+                    >
+                      <div className="flex flex-col items-start gap-2">
+                        <div className="h-8 flex items-center">
+                          <Image
+                            src="/images/Revolut.svg"
+                            alt="Revolut"
+                            width={80}
+                            height={32}
+                            className="object-contain"
+                          />
+                        </div>
+                        <span className="text-sm font-semibold text-black">Revolut Pay</span>
                       </div>
-                      <span className="text-sm font-semibold text-black">Revolut Pay</span>
-                    </div>
-                  )}
-                </motion.button>
-              </div>
+                    </motion.button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="space-y-3">
                 <div className="w-full py-3 bg-green-500/10 border border-green-500/20 text-green-500 font-semibold text-center rounded">
