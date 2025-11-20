@@ -61,7 +61,7 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-3">Payment</h3>
             <p className="text-sm text-foreground/60 mb-3">
-              Payments powered by Money Dev Kit. Self-custodial Bitcoin payments, deployed simply.
+              Lightning checkout is being rebuilt. For now, reach out directly if you would like to collect a piece.
             </p>
           </div>
         </div>
