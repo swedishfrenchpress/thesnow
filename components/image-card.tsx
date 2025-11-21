@@ -237,7 +237,7 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
                       </div>
                     </motion.button>
 
-                    {/* Revolut Pay Button */}
+                    {/* Bitcoin Pay Button */}
                     <motion.button
                       onClick={handlePurchase}
                       whileHover={{ scale: 1.02 }}
@@ -247,14 +247,14 @@ export function ImageCard({ artwork, index }: ImageCardProps) {
                       <div className="flex flex-col items-start gap-2">
                         <div className="h-8 flex items-center">
                           <Image
-                            src="/images/Revolut.svg"
-                            alt="Revolut"
-                            width={80}
+                            src="/images/Bitcoin.png"
+                            alt="Bitcoin"
+                            width={32}
                             height={32}
                             className="object-contain"
                           />
                         </div>
-                        <span className="text-sm font-semibold text-black">Revolut Pay</span>
+                        <span className="text-sm font-semibold text-black">Pay with Bitcoin</span>
                       </div>
                     </motion.button>
                   </div>
